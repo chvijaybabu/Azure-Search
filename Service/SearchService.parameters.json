@@ -1,0 +1,102 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "subscriptionID": {
+      "value": "#{Azure.SubscriptionId}"
+    },
+    "resourceGroup": {
+      "value": "#{Azure.Search.ResourceGroupName}"
+    },
+    "searchInstanceName": {
+      "value": "#{Azure.Search.InstanceName}"
+    },
+    "location": {
+      "value": "#{Azure.Search.Location}"
+    },
+    "sku": {
+      "value": "#{Azure.Search.Sku}"
+    },
+    "replicaCount": {
+      "value": "#{Azure.Search.ReplicaCount}"
+    },
+    "partitionCount": {
+      "value": "#{Azure.Search.PartitionCount}"
+    },
+    "hostingMode": {
+      "value": "#{Azure.Search.HostingMode}"
+    },
+    "logsDiagnosticSettingName": {
+      "value": "#{LogsDiagnosticSettingName}"
+    },
+    "analyticsDiagnosticSettingName": {
+      "value": "#{AnalyticsDiagnosticSettingName}"
+    },
+    "logsStorageAccountName": {
+      "value": "#{Logs.StorageAccountName}"
+    },
+    "storageAccountType": {
+      "value": "#{Logs.StorageAccountType}"
+    },
+    "logs.enabled": {
+      "value": "#{Logs.Enabled}"
+    },
+    "logs.category": {
+      "value": "#{Logs.Category}"
+    },
+    "logs.retentionPolicy.days": {
+      "value": "#{Logs.RetentionPolicy.Days}"
+    },
+    "logs.retentionPolicy.enabled": {
+      "value": "#{Logs.RetentionPolicy.Enabled}"
+    },
+    "metrics.enabled": {
+      "value": "#{Metrics.Enabled}"
+    },
+    "metrics.category": {
+      "value": "#{Metrics.Category}"
+    },
+    "metrics.retentionPolicy.days": {
+      "value": "#{Metrics.RetentionPolicy.Days}"
+    },
+    "metrics.retentionPolicy.enabled": {
+      "value": "#{Metrics.RetentionPolicy.Enabled}"
+    },
+    "logs.workspace.enabled": {
+      "value": "#{Logs.Workspace.Enabled}"
+    },
+    "logs.workspace.category": {
+      "value": "#{Logs.Workspace.Category}"
+    },
+    "logs.workspace.retentionPolicy.days": {
+      "value": "#{Logs.Workspace.RetentionPolicy.Days}"
+    },
+    "logs.workspace.retentionPolicy.enabled": {
+      "value": "#{Logs.Workspace.RetentionPolicy.Enabled}"
+    },
+    "metrics.workspace.enabled": {
+      "value": "#{Metrics.Workspace.Enabled}"
+    },
+    "metrics.workspace.category": {
+      "value": "#{Metrics.Workspace.Category}"
+    },
+    "metrics.workspace.retentionPolicy.days": {
+      "value": "#{Metrics.Workspace.RetentionPolicy.Days}"
+    },
+    "metrics.workspace.retentionPolicy.enabled": {
+      "value": "#{Metrics.Workspace.RetentionPolicy.Enabled}"
+    },
+    "workspaceName": {
+      "value": "#{Logs.Workspace.Name}"
+    },
+    "workspaceDataRetention": {
+      "value": "#{Logs.Workspace.DataRetention.Days}"
+    },
+    "workspaceImmediatePurgeDataOn30Days": {
+      "value": "#{Logs.Workspace.ImmediatePurgeDataOn30Days}"
+    },
+    "workspacePricingTier": {
+      "value": "#{Logs.Workspace.PricingTier}"
+    }
+  }
+}

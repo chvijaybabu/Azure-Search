@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "subscriptionID": {
+      "value": "#{Azure.SubscriptionId}"
+    },
+    "resourceGroup": {
+      "value": "#{Azure.Search.ResourceGroupName}"
+    },
+    "searchInstanceName": {
+      "value": "#{Azure.Search.InstanceName}"
+    },
+    "location": {
+      "value": "#{Azure.Search.Location}"
+    },
+    "dashboardName": {
+      "value": "#{Azure.Search.DashboardName}"
+    },
+    "notesIndexName": {
+      "value": "#{Azure.Search.NotesIndexName}"
+    },
+    "queryThroughput.Ago": {
+      "value": "#{Azure.Search.Dashboard.QueryThroughput.Ago}"
+    },
+    "queryThroughput.TimeGenerated": {
+      "value": "#{Azure.Search.Dashboard.QueryThroughput.TimeGenerated}"
+    },
+    "responseTime.Ago": {
+      "value": "#{Azure.Search.Dashboard.ResponseTime.Ago}"
+    },
+    "responseTime.TimeGenerated": {
+      "value": "#{Azure.Search.Dashboard.ResponseTime.TimeGenerated}"
+    },
+    "indexDocs.Ago": {
+      "value": "#{Azure.Search.Dashboard.IndexDocs.Ago}"
+    },
+    "indexDocs.TimeGenerated": {
+      "value": "#{Azure.Search.Dashboard.IndexDocs.TimeGenerated}"
+    }
+  }
+}

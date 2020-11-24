@@ -1,0 +1,215 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "subscriptionID": {
+      "type": "string"
+    },
+    "resourceGroup": {
+      "type": "string"
+    },
+    "searchInstanceName": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "sku": {
+      "type": "string"
+    },
+    "replicaCount": {
+      "type": "string"
+    },
+    "partitionCount": {
+      "type": "string"
+    },
+    "hostingMode": {
+      "type": "string"
+    },
+    "logsDiagnosticSettingName": {
+      "type": "string"
+    },
+    "analyticsDiagnosticSettingName": {
+      "type": "string"
+    },
+    "logsStorageAccountName": {
+      "type": "string"
+    },
+    "storageAccountType": {
+      "type": "string"
+    },
+    "logs.enabled": {
+      "type": "string"
+    },
+    "logs.category": {
+      "type": "string"
+    },
+    "logs.retentionPolicy.days": {
+      "type": "string"
+    },
+    "logs.retentionPolicy.enabled": {
+      "type": "string"
+    },
+    "metrics.enabled": {
+      "type": "string"
+    },
+    "metrics.category": {
+      "type": "string"
+    },
+    "metrics.retentionPolicy.days": {
+      "type": "string"
+    },
+    "metrics.retentionPolicy.enabled": {
+      "type": "string"
+    },
+    "logs.workspace.enabled": {
+      "type": "string"
+    },
+    "logs.workspace.category": {
+      "type": "string"
+    },
+    "logs.workspace.retentionPolicy.days": {
+      "type": "string"
+    },
+    "logs.workspace.retentionPolicy.enabled": {
+      "type": "string"
+    },
+    "metrics.workspace.enabled": {
+      "type": "string"
+    },
+    "metrics.workspace.category": {
+      "type": "string"
+    },
+    "metrics.workspace.retentionPolicy.days": {
+      "type": "string"
+    },
+    "metrics.workspace.retentionPolicy.enabled": {
+      "type": "string"
+    },
+    "workspaceName": {
+      "type": "string"
+    },
+    "workspaceDataRetention": {
+      "type": "string"
+    },
+    "workspaceImmediatePurgeDataOn30Days": {
+      "type": "string"
+    },
+    "workspacePricingTier": {
+      "type": "string"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[parameters('logsStorageAccountName')]",
+      "location": "[parameters('location')]",
+      "apiVersion": "2019-04-01",
+      "sku": {
+        "name": "[parameters('storageAccountType')]"
+      },
+      "kind": "StorageV2",
+      "properties": {}
+    },
+    {
+      "apiVersion": "2015-11-01-preview",
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "name": "[parameters('workspaceName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "retentionInDays": "[parameters('workspaceDataRetention')]",
+        "features": {
+          "immediatePurgeDataOn30Days": "[parameters('workspaceImmediatePurgeDataOn30Days')]"
+        },
+        "sku": {
+          "name": "[parameters('workspacePricingTier')]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Search/searchServices",
+      "apiVersion": "2015-08-19",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/', parameters('logsStorageAccountName'))]",
+        "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName'))]"
+      ],
+      "name": "[parameters('searchInstanceName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('sku')]"
+      },
+      "properties": {
+        "replicaCount": "[parameters('replicaCount')]",
+        "partitionCount": "[parameters('partitionCount')]",
+        "hostingMode": "[parameters('hostingMode')]"
+      },
+      "resources": [
+        {
+          "type": "providers/diagnosticSettings",
+          "name": "[concat('Microsoft.Insights/', parameters('logsDiagnosticSettingName'))]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Search/searchServices/', parameters('searchInstanceName'))]"
+          ],
+          "apiVersion": "2017-05-01-preview",
+          "properties": {
+            "name": "[parameters('logsDiagnosticSettingName')]",
+            "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts/', parameters('logsStorageAccountName'))]",
+            "logs": [
+              {
+                "category": "[parameters('logs.category')]",
+                "enabled": "[parameters('logs.enabled')]",
+                "retentionPolicy": {
+                  "days": "[parameters('logs.retentionPolicy.days')]",
+                  "enabled": "[parameters('logs.retentionPolicy.enabled')]"
+                }
+              }
+            ],
+            "metrics": [
+              {
+                "category": "[parameters('metrics.category')]",
+                "enabled": "[parameters('metrics.enabled')]",
+                "retentionPolicy": {
+                  "enabled": "[parameters('metrics.retentionPolicy.enabled')]",
+                  "days": "[parameters('metrics.retentionPolicy.days')]"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "providers/diagnosticSettings",
+          "name": "[concat('Microsoft.Insights/', parameters('analyticsDiagnosticSettingName'))]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Search/searchServices/', parameters('searchInstanceName'))]"
+          ],
+          "apiVersion": "2017-05-01-preview",
+          "properties": {
+            "name": "[parameters('analyticsDiagnosticSettingName')]",
+            "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]",
+            "logs": [
+              {
+                "category": "[parameters('logs.workspace.category')]",
+                "enabled": "[parameters('logs.workspace.enabled')]",
+                "retentionPolicy": {
+                  "days": "[parameters('logs.workspace.retentionPolicy.days')]",
+                  "enabled": "[parameters('logs.workspace.retentionPolicy.enabled')]"
+                }
+              }
+            ],
+            "metrics": [
+              {
+                "category": "[parameters('metrics.workspace.category')]",
+                "enabled": "[parameters('metrics.workspace.enabled')]",
+                "retentionPolicy": {
+                  "enabled": "[parameters('metrics.workspace.retentionPolicy.enabled')]",
+                  "days": "[parameters('metrics.workspace.retentionPolicy.days')]"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

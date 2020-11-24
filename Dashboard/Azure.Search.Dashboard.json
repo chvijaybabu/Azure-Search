@@ -1,0 +1,513 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "subscriptionID": {
+      "type": "string"
+    },
+    "resourceGroup": {
+      "type": "string"
+    },
+    "searchInstanceName": {
+      "type": "string"
+    },
+    "notesIndexName": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "dashboardName": {
+      "type": "string"
+    },
+    "queryThroughput.Ago": {
+      "type": "string"
+    },
+    "queryThroughput.TimeGenerated": {
+      "type": "string"
+    },
+    "responseTime.Ago": {
+      "type": "string"
+    },
+    "responseTime.TimeGenerated": {
+      "type": "string"
+    },
+    "indexDocs.Ago": {
+      "type": "string"
+    },
+    "indexDocs.TimeGenerated": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "singlequote": "'"
+  },
+  "resources": [
+    {
+      "properties": {
+        "lenses": {
+          "0": {
+            "order": 0,
+            "parts": {
+              "0": {
+                "position": {
+                  "x": 0,
+                  "y": 0,
+                  "colSpan": 6,
+                  "rowSpan": 4
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "ComponentId",
+                      "value": {
+                        "SubscriptionId": "[parameters('subscriptionID')]",
+                        "ResourceGroup": "[parameters('resourceGroup')]",
+                        "Name": "[parameters('searchInstanceName')]",
+                        "ResourceId": "[resourceId('Microsoft.Search/searchServices/', parameters('searchInstanceName'))]"
+                      }
+                    },
+                    {
+                      "name": "Query",
+                      "value": "[concat('AzureDiagnostics\n| where TimeGenerated > ago(',parameters('queryThroughput.Ago'),') and IndexName_s ==', variables('singlequote'), parameters('notesIndexName'), variables('singlequote'), ' and OperationName == \"Query.Search\" \n| summarize count(Query_s) by bin(TimeGenerated,', parameters('queryThroughput.TimeGenerated'), ') \n| render timechart\n')]"
+                    },
+                    {
+                      "name": "Dimensions",
+                      "value": {
+                        "xAxis": {
+                          "name": "TimeGenerated",
+                          "type": "datetime"
+                        },
+                        "yAxis": [
+                          {
+                            "name": "count_Query_s",
+                            "type": "long"
+                          }
+                        ],
+                        "splitBy": [],
+                        "aggregation": "Sum"
+                      }
+                    },
+                    {
+                      "name": "Version",
+                      "value": "1.0"
+                    },
+                    {
+                      "name": "PartId",
+                      "value": "c750d4c4-2eb6-4461-9b4b-4a4af0398054"
+                    },
+                    {
+                      "name": "PartTitle",
+                      "value": "Analytics"
+                    },
+                    {
+                      "name": "PartSubTitle",
+                      "value": "[parameters('notesIndexName')]"
+                    },
+                    {
+                      "name": "resourceTypeMode",
+                      "value": "azureFirst"
+                    },
+                    {
+                      "name": "ControlType",
+                      "value": "AnalyticsChart"
+                    },
+                    {
+                      "name": "SpecificChart",
+                      "value": "Line"
+                    },
+                    {
+                      "name": "TimeRange",
+                      "isOptional": true
+                    },
+                    {
+                      "name": "DashboardId",
+                      "isOptional": true
+                    }
+                  ],
+                  "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+                  "settings": {
+                    "content": {
+                      "PartTitle": "Query Throughput",
+                      "PartSubTitle": "[parameters('notesIndexName')]",
+                      "Query": "[concat('AzureDiagnostics\n| where TimeGenerated > ago(',parameters('queryThroughput.Ago'),') and IndexName_s ==', variables('singlequote'),parameters('notesIndexName'), variables('singlequote'),' and OperationName == \"Query.Search\" \n| summarize count(Query_s) by bin(TimeGenerated, ',parameters('queryThroughput.TimeGenerated'),') \n| render timechart\n')]"
+                    }
+                  },
+                  "asset": {
+                    "idInputName": "ComponentId",
+                    "type": "ApplicationInsights"
+                  },
+                  "filters": {
+                    "MsPortalFx_TimeRange": {
+                      "model": {
+                        "format": "utc",
+                        "granularity": "15m",
+                        "relative": "30d"
+                      }
+                    }
+                  }
+                }
+              },
+              "1": {
+                "position": {
+                  "x": 6,
+                  "y": 0,
+                  "colSpan": 6,
+                  "rowSpan": 4
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "ComponentId",
+                      "value": {
+                        "SubscriptionId": "[parameters('subscriptionID')]",
+                        "ResourceGroup": "[parameters('ResourceGroup')]",
+                        "Name": "[parameters('searchInstanceName')]",
+                        "ResourceId": "[resourceId('Microsoft.Search/searchServices/', parameters('searchInstanceName'))]"
+                      }
+                    },
+                    {
+                      "name": "Query",
+                      "value": "[concat('AzureDiagnostics\n| where TimeGenerated > ago(',parameters('responseTime.Ago'),') and IndexName_s ==', variables('singlequote'),parameters('notesIndexName'), variables('singlequote'),' and OperationName == \"Query.Search\" \n| summarize avg(DurationMs) by bin(TimeGenerated, ',parameters('responseTime.TimeGenerated'),') \n| render timechart  \n')]"
+                    },
+                    {
+                      "name": "Dimensions",
+                      "value": {
+                        "xAxis": {
+                          "name": "TimeGenerated",
+                          "type": "datetime"
+                        },
+                        "yAxis": [
+                          {
+                            "name": "avg_DurationMs",
+                            "type": "real"
+                          }
+                        ],
+                        "splitBy": [],
+                        "aggregation": "Sum"
+                      }
+                    },
+                    {
+                      "name": "Version",
+                      "value": "1.0"
+                    },
+                    {
+                      "name": "PartId",
+                      "value": "68068721-88a9-4543-97f9-ecbddc4d68e5"
+                    },
+                    {
+                      "name": "PartTitle",
+                      "value": "Analytics"
+                    },
+                    {
+                      "name": "PartSubTitle",
+                      "value": "[parameters('notesIndexName')]"
+                    },
+                    {
+                      "name": "resourceTypeMode",
+                      "value": "azureFirst"
+                    },
+                    {
+                      "name": "ControlType",
+                      "value": "AnalyticsChart"
+                    },
+                    {
+                      "name": "SpecificChart",
+                      "value": "Line"
+                    },
+                    {
+                      "name": "TimeRange",
+                      "isOptional": true
+                    },
+                    {
+                      "name": "DashboardId",
+                      "isOptional": true
+                    }
+                  ],
+                  "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+                  "settings": {
+                    "content": {
+                      "PartTitle": "Avg ResponseTime",
+                      "PartSubTitle": "[parameters('notesIndexName')]",
+                      "Query": "[concat('AzureDiagnostics\n| where TimeGenerated > ago(',parameters('responseTime.Ago'),') and IndexName_s ==', variables('singlequote'),parameters('notesIndexName'), variables('singlequote'),' and OperationName == \"Query.Search\" \n| summarize avg(DurationMs) by bin(TimeGenerated, ',parameters('responseTime.TimeGenerated'),') \n| render timechart  \n')]"
+                    }
+                  },
+                  "asset": {
+                    "idInputName": "ComponentId",
+                    "type": "ApplicationInsights"
+                  },
+                  "filters": {
+                    "MsPortalFx_TimeRange": {
+                      "model": {
+                        "format": "utc",
+                        "granularity": "auto",
+                        "relative": "30d"
+                      }
+                    }
+                  }
+                }
+              },
+              "2": {
+                "position": {
+                  "x": 12,
+                  "y": 0,
+                  "colSpan": 6,
+                  "rowSpan": 4
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "ComponentId",
+                      "value": {
+                        "SubscriptionId": "[parameters('subscriptionID')]",
+                        "ResourceGroup": "[parameters('ResourceGroup')]",
+                        "Name": "[parameters('searchInstanceName')]",
+                        "ResourceId": "[resourceId('Microsoft.Search/searchServices/', parameters('searchInstanceName'))]"
+                      }
+                    },
+                    {
+                      "name": "Query",
+                      "value": "// Latest metrics\n// Show the latest metrics reports for each reported metric\nAzureMetrics \r\n| summarize arg_max(TimeGenerated, UnitName, Total, Count, Maximum, Minimum, Average) by MetricName"
+                    },
+                    {
+                      "name": "TimeRange",
+                      "value": "P1D"
+                    },
+                    {
+                      "name": "Dimensions",
+                      "value": {
+                        "xAxis": {
+                          "name": "TimeGenerated",
+                          "type": "datetime"
+                        },
+                        "yAxis": [
+                          {
+                            "name": "Total",
+                            "type": "real"
+                          }
+                        ],
+                        "splitBy": [
+                          {
+                            "name": "MetricName",
+                            "type": "string"
+                          }
+                        ],
+                        "aggregation": "Sum"
+                      }
+                    },
+                    {
+                      "name": "Version",
+                      "value": "1.0"
+                    },
+                    {
+                      "name": "PartId",
+                      "value": "9d5c8db3-983a-4396-a30a-7c43531904e3"
+                    },
+                    {
+                      "name": "PartTitle",
+                      "value": "Analytics"
+                    },
+                    {
+                      "name": "PartSubTitle",
+                      "value": "[parameters('searchInstanceName')]"
+                    },
+                    {
+                      "name": "DraftRequestParameters",
+                      "value": {
+                        "scope": "hierarchy"
+                      }
+                    },
+                    {
+                      "name": "resourceTypeMode",
+                      "value": "azureFirst"
+                    },
+                    {
+                      "name": "ControlType",
+                      "value": "AnalyticsChart"
+                    },
+                    {
+                      "name": "SpecificChart",
+                      "value": "Bar"
+                    },
+                    {
+                      "name": "DashboardId",
+                      "isOptional": true
+                    }
+                  ],
+                  "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+                  "settings": {
+                    "content": {
+                      "Query": "// Latest metrics\n// Show the latest metrics reports for each reported metric\nAzureMetrics \n| where TimeGenerated > ago(30d)\n| summarize arg_max(TimeGenerated, UnitName, Total, Count, Maximum, Minimum, Average) by MetricName"
+                    }
+                  },
+                  "asset": {
+                    "idInputName": "ComponentId",
+                    "type": "ApplicationInsights"
+                  },
+                  "filters": {
+                    "MsPortalFx_TimeRange": {
+                      "model": {
+                        "format": "utc",
+                        "granularity": "30m",
+                        "relative": "30d"
+                      }
+                    }
+                  }
+                }
+              },
+              "3": {
+                "position": {
+                  "x": 0,
+                  "y": 4,
+                  "colSpan": 6,
+                  "rowSpan": 4
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "ComponentId",
+                      "value": {
+                        "SubscriptionId": "[parameters('subscriptionID')]",
+                        "ResourceGroup": "[parameters('ResourceGroup')]",
+                        "Name": "[parameters('searchInstanceName')]",
+                        "ResourceId": "[resourceId('Microsoft.Search/searchServices/', parameters('searchInstanceName'))]"
+                      }
+                    },
+                    {
+                      "name": "Query",
+                      "value": "[concat('AzureDiagnostics\n| where TimeGenerated > ago(',parameters('indexDocs.Ago'),') and IndexName_s ==', variables('singlequote'),parameters('notesIndexName'), variables('singlequote'),' and OperationName == \"Indexing.Index\" \n| summarize any(Documents_d) by bin(TimeGenerated, ',parameters('indexDocs.TimeGenerated'),') \n| render timechart  \n')]"
+                    },
+                    {
+                      "name": "Dimensions",
+                      "value": {
+                        "xAxis": {
+                          "name": "TimeGenerated",
+                          "type": "datetime"
+                        },
+                        "yAxis": [
+                          {
+                            "name": "any_Documents_d",
+                            "type": "long"
+                          }
+                        ],
+                        "splitBy": [],
+                        "aggregation": "Sum"
+                      }
+                    },
+                    {
+                      "name": "Version",
+                      "value": "1.0"
+                    },
+                    {
+                      "name": "PartId",
+                      "value": "a99eadc9-5fc0-415e-b723-7b6aefada2c8"
+                    },
+                    {
+                      "name": "PartTitle",
+                      "value": "Analytics"
+                    },
+                    {
+                      "name": "PartSubTitle",
+                      "value": "[parameters('notesIndexName')]"
+                    },
+                    {
+                      "name": "DraftRequestParameters",
+                      "value": {
+                        "scope": "hierarchy"
+                      }
+                    },
+                    {
+                      "name": "resourceTypeMode",
+                      "value": "azureFirst"
+                    },
+                    {
+                      "name": "ControlType",
+                      "value": "AnalyticsChart"
+                    },
+                    {
+                      "name": "SpecificChart",
+                      "value": "Line"
+                    },
+                    {
+                      "name": "TimeRange",
+                      "isOptional": true
+                    },
+                    {
+                      "name": "DashboardId",
+                      "isOptional": true
+                    }
+                  ],
+                  "type": "Extension/AppInsightsExtension/PartType/AnalyticsPart",
+                  "settings": {
+                    "content": {
+                      "PartTitle": "Index Docs Count",
+                      "PartSubTitle": "[parameters('notesIndexName')]",
+                      "Query": "[concat('AzureDiagnostics\n| where TimeGenerated > ago(',parameters('indexDocs.Ago'),') and IndexName_s ==', variables('singlequote'),parameters('notesIndexName'), variables('singlequote'),' and OperationName == \"Indexing.Index\" \n| summarize any(Documents_d) by bin(TimeGenerated, ',parameters('indexDocs.TimeGenerated'),') \n| render timechart  \n')]"
+                    }
+                  },
+                  "asset": {
+                    "idInputName": "ComponentId",
+                    "type": "ApplicationInsights"
+                  },
+                  "filters": {
+                    "MsPortalFx_TimeRange": {
+                      "model": {
+                        "format": "utc",
+                        "granularity": "auto",
+                        "relative": "30d"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "metadata": {
+          "model": {
+            "timeRange": {
+              "value": {
+                "relative": {
+                  "duration": 24,
+                  "timeUnit": 1
+                }
+              },
+              "type": "MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"
+            },
+            "filterLocale": {
+              "value": "en-us"
+            },
+            "filters": {
+              "value": {
+                "MsPortalFx_TimeRange": {
+                  "model": {
+                    "format": "utc",
+                    "granularity": "auto",
+                    "relative": "24h"
+                  },
+                  "displayCache": {
+                    "name": "UTC Time",
+                    "value": "Past 24 hours"
+                  },
+                  "filteredPartIds": [
+                    "StartboardPart-AnalyticsPart-1acaa954-ae66-47fb-b1b7-d9fe771ee360",
+                    "StartboardPart-AnalyticsPart-1acaa954-ae66-47fb-b1b7-d9fe771ee362",
+                    "StartboardPart-AnalyticsPart-1acaa954-ae66-47fb-b1b7-d9fe771ee364",
+                    "StartboardPart-AnalyticsPart-1acaa954-ae66-47fb-b1b7-d9fe771ee366"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "name": "[parameters('dashboardName')]",
+      "type": "Microsoft.Portal/dashboards",
+      "location": "[parameters('location')]",
+      "tags": {
+        "hidden-title": "[parameters('dashboardName')]"
+      },
+      "apiVersion": "2015-08-01-preview"
+    }
+  ]
+}

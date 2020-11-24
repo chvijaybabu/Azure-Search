@@ -1,0 +1,13 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Azure.Search.Dashboard</id>
+    <version>$version$</version>
+    <authors>Chvijaybabu</authors>
+    <description>Azure.Search.Dashboard</description>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+  </metadata>
+  <files>
+    <file src="*.*" target="." />
+  </files>
+</package>
